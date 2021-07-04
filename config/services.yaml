@@ -4,6 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    app.billing.bills_path: '%kernel.project_dir%/var/bills'
 
 services:
     # default configuration for services in *this* file
@@ -16,10 +17,35 @@ services:
     App\:
         resource: '../src/'
         exclude:
-            - '../src/DependencyInjection/'
-            - '../src/Entity/'
+            - '../src/**/Domain/Model/'
+            - '../src/**/Domain/ValueObject/'
+            - '../src/**/Domain/Exception/'
+            - '../src/**/Shared/Domain/Collection.php'
             - '../src/Kernel.php'
             - '../src/Tests/'
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    App\Core\Billing\Presentation\Api\Controller\:
+        resource: '../src/Core/Billing/Presentation/Api/Controller/'
+        tags: [ 'controller.service_arguments' ]
+
+    App\Core\Billing\Presentation\Front\Controller\:
+        resource: '../src/Core/Billing/Presentation/Front/Controller/'
+        tags: [ 'controller.service_arguments' ]
+
+    App\Core\Billing\Infrastructure\Generator\PdfBillGenerator:
+        arguments:
+            $template: 'core/billing/pdf/bill.pdf.twig'
+    App\Core\Billing\Application\Generator\PdfBillGeneratorInterface:
+        alias: App\Core\Billing\Infrastructure\Generator\PdfBillGenerator
+
+when@clientB:
+    services:
+        _defaults:
+            autowire: true
+            autoconfigure: true
+
+        App\ClientB\Billing\Infrastructure\Generator\PdfBillGenerator:
+            arguments:
+                $template: 'clientb/billing/pdf/bill.pdf.twig'
+        App\Core\Billing\Application\Generator\PdfBillGeneratorInterface:
+            alias: App\ClientB\Billing\Infrastructure\Generator\PdfBillGenerator

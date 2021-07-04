@@ -13,8 +13,10 @@ class Kernel extends BaseKernel
 
     protected function configureContainer(ContainerConfigurator $container): void
     {
+        // Customer env = prod for packages configuration
+        $packagesEnv = (!in_array($this->environment, ['test', 'dev']) ? 'prod' : $this->environment);
         $container->import('../config/{packages}/*.yaml');
-        $container->import('../config/{packages}/'.$this->environment.'/*.yaml');
+        $container->import('../config/{packages}/'.$packagesEnv.'/*.yaml');
 
         if (is_file(\dirname(__DIR__).'/config/services.yaml')) {
             $container->import('../config/services.yaml');

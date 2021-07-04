@@ -1,0 +1,15 @@
+{% set env = (app.environment in ['dev', 'prod'] ? 'Core' : app.environment) %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ env }} Bill</title>
+</head>
+<body>
+{%  block body %}
+    <h3>{{ env }}</h3>
+    <h5>#{{ bill.number }} - from {{ bill.period.from|date('Y-m-d') }} to {{ bill.period.to|date('Y-m-d') }}</h5>
+{%  endblock body %}
+</body>
+</html>
