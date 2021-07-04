@@ -46,6 +46,6 @@ when@clientB:
 
         App\ClientB\Billing\Infrastructure\Generator\PdfBillGenerator:
             arguments:
-                $template: 'clientb/billing/pdf/bill.pdf.twig'
+                $template: 'client_b/billing/pdf/bill.pdf.twig'
         App\Core\Billing\Application\Generator\PdfBillGeneratorInterface:
             alias: App\ClientB\Billing\Infrastructure\Generator\PdfBillGenerator
